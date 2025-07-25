@@ -1,0 +1,21 @@
+{
+  "name": "source-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "esbuild": "^0.25.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "typescript": "^5.0.0"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1"
+}
