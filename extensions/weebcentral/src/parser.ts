@@ -31,9 +31,13 @@ function parseChapterList(html: string): ChapterEntry[] {
 
     const timestamp: string = $el.find("time").text().trim();
 
+    const numberMatch = title.match(/(\d+(\.\d+)?)/);
+    const number: number = numberMatch ? Number(numberMatch[0]) : 0;
+
     chapterEntries.push({
       id,
       title,
+      number,
       timestamp,
     });
   });

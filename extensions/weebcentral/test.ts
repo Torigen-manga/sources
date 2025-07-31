@@ -50,5 +50,25 @@ const weebCentralSource = new WeebCentralSource(new TestRequestManager());
     parameters: { sort: "Latest Updates" },
   });
 
-  console.log(res);
+  if (res.results.length === 0 || !res.results) {
+    console.log("No results found.");
+    return;
+  }
+
+  console.log(res.results);
+
+  const chapters = await weebCentralSource.getChapters(
+    res.results?.[0]?.id ?? ""
+  );
+
+  const chapterOrderByNumber = chapters.sort((a, b) => {
+    return a.number - b.number;
+  });
+
+  if (chapterOrderByNumber.length === 0) {
+    console.log("No chapters found for the first result.");
+    return;
+  }
+
+  console.log("Chapters for the first result:", chapterOrderByNumber);
 })();

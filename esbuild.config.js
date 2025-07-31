@@ -3,7 +3,7 @@ import path from "node:path";
 import { argv } from "node:process";
 import fs from "node:fs/promises";
 
-const EXTENSIONS_DIR = "sources";
+const EXTENSIONS_DIR = "extensions";
 const extensionName = argv[2];
 
 async function buildExtension(name) {

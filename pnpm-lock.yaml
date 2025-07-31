@@ -11,6 +11,13 @@ importers:
       esbuild:
         specifier: ^0.25.8
         version: 0.25.8
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.3
+        version: 24.1.0
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
 
   sources/manga-livre:
     dependencies:
