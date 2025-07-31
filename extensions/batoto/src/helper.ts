@@ -16,3 +16,12 @@ export function statusReturnal(status: string): Status {
       return "Unknown";
   }
 }
+
+export function extractSeriesId(url: string): string {
+  const match = url.match(/\/series\/([^/]+)/);
+  return match ? match[1] : "";
+}
+
+export function buildUrlFromId(id: string): string {
+  return `https://bato.to/series/${id}`;
+}

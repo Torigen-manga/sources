@@ -1,14 +1,6 @@
 import { load, type CheerioAPI } from "cheerio";
-import type { MangaEntry } from "@torigen/mounter";
-
-function extractSeriesId(url: string): string {
-  const match = url.match(/\/series\/([^/]+)/);
-  return match ? match[1] : "";
-}
-
-function buildUrlFromId(id: string): string {
-  return `https://bato.to/series/${id}`;
-}
+import type { Manga, MangaEntry, Status } from "@torigen/mounter";
+import { extractSeriesId, statusReturnal } from "./helper";
 
 function parsePopularUpdates(html: string): MangaEntry[] {
   const $: CheerioAPI = load(html);
@@ -61,12 +53,58 @@ function parseLatestReleases(html: string): MangaEntry[] {
   return mangaEntries;
 }
 
-const res = await fetch("https://bato.to/latest?langs=en,pt,pt_br&page=3");
+function parseMangaDetails(html: string) {
+  const $: CheerioAPI = load(html);
 
-const data = await res.json();
+  const title = $("h3.item-title > a").text().trim();
+  const description = $("div.limit-html").text().trim();
+  const image = $("div.attr-cover > img").attr("src") || "";
 
-const html = data.res.html;
+  const authors: string[] = [];
+  const artists: string[] = [];
+  const baseTags: string[] = [];
 
-const test = parseLatestReleases(html);
+  let status: Status = "Unknown";
 
-console.log(test);
+  $(".attr-item").each((_, el) => {
+    const $el = $(el);
+    const label = $el.find("b.text-muted").text().trim();
+    const content = $el.find("span").first();
+
+    switch (label) {
+      case "Authors:":
+        content.find("a").each((_, link) => {
+          authors.push($(link).text().trim());
+        });
+        break;
+
+      case "Artists:":
+        content.find("a").each((_, link) => {
+          artists.push($(link).text().trim());
+        });
+        break;
+      case "Genres:":
+        content.find("span, u").each((_, tag) => {
+          const tagText = $(tag).text().trim();
+          if (tagText && tagText !== ",") {
+            baseTags.push(tagText);
+          }
+        });
+        break;
+      case "Upload Status:":
+        status = statusReturnal(content.text().trim());
+        break;
+      default:
+        break;
+    }
+  });
+
+  return {
+    title,
+    description,
+    image,
+    authors,
+    artists,
+    status,
+  };
+}
